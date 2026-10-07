@@ -19,11 +19,17 @@ jobs:
         with:
           gradle-version: 8.12
 
+      - name: Unpack zip
+        run: |
+          find . -name '*.zip' -not -path './.git/*' | while read -r z; do
+            unzip -oq "$z" -d unpacked
+          done
+
       - name: Build mod
         run: |
           FILE=$(find . -name settings.gradle -not -path './.git/*' | head -n 1)
           if [ -z "$FILE" ]; then
-            echo "settings.gradle не найден. Файлы проекта не загружены в репозиторий."
+            echo "settings.gradle не найден. Загрузи в репозиторий autotune-mod-project.zip"
             ls -R
             exit 1
           fi
