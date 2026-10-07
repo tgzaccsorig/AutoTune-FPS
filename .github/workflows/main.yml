@@ -20,10 +20,18 @@ jobs:
           gradle-version: 8.12
 
       - name: Build mod
-        run: gradle build --no-daemon
+        run: |
+          FILE=$(find . -name settings.gradle -not -path './.git/*' | head -n 1)
+          if [ -z "$FILE" ]; then
+            echo "settings.gradle не найден. Файлы проекта не загружены в репозиторий."
+            ls -R
+            exit 1
+          fi
+          cd "$(dirname "$FILE")"
+          gradle build --no-daemon
 
       - name: Upload jar
         uses: actions/upload-artifact@v4
         with:
           name: AutoTune-mod
-          path: build/libs/*.jar
+          path: "**/build/libs/*.jar"
